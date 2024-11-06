@@ -1,0 +1,114 @@
+import donorSchema from "./donor.model.js"
+export async function addDonors(req,res){
+        // const{name,age,dob,phone,place,Bgroup}=req.body
+
+    try {
+        // console.log(req.body);
+        const{name,age,dob,phone,place,Bgroup}=req.body        
+        // console.log(name,age,dob,phone,place,Bgroup);
+
+        // Validation
+        if(!(name&&age&&dob&&phone&&place&&Bgroup))
+            return res.status(404).send({msg:"Fields Are Empty"})
+                
+            donorSchema.create({name,age,dob,phone,place,Bgroup}).then((data)=>{
+                return res.status(201).send({msg:data})            
+            }).catch((error)=>{
+              return  res.status(404).send({msg:error})            
+    
+            })
+
+        
+    } catch (error) {
+      return  res.status(404).send({msg:error})                    
+
+        
+        
+    }
+
+
+    
+}
+
+export async function getDonors(req,res){
+    try {
+        const donors=await donorSchema.find();
+        console.log(donors);
+        res.status(200).send(donors)
+        
+    } catch (error) {
+        res.status(404).send({msg:error})
+        
+    }
+
+}
+
+// get donor
+
+export async function getDonor(req,res){
+    try {
+        console.log(req.params);
+        const _id=req.params;
+        const data=await donorSchema.findOne({_id})
+        res.status(200).send(data);
+        
+    } catch (error) {
+        res.status(404).send(error);
+        
+    }
+}
+
+// Update data
+
+export async function updateDonor(req,res) {
+    try {
+        // console.log(req.params);
+        // console.log(req.body);
+        const _id=req.params;
+        const {name,age,dob,phone,place,Bgroup}=req.body
+        if(!(name&&age&&dob&&phone&&place&&Bgroup)){
+            return res.status(404).send({msg:"Fields Are Empty"})
+        }
+        
+        donorSchema.updateOne({_id},{$set:{name,age,dob,phone,place,Bgroup}}).then(()=>{  
+            console.log(req.body);
+                      
+            res.status(201).send({msg:"Successfully Updated"})
+
+        }).catch((error)=>{
+            res.status(404).send(error)
+        })
+        
+        
+        
+        
+    } catch (error) {
+        console.log(error);
+        
+
+        
+    }
+    
+}
+
+// delete data
+
+export async function deleteDonor(req,res) {
+    try {
+        const _id=req.params
+        console.log(_id);
+        donorSchema.deleteOne({_id}).then(()=>{
+            res.status(200).send({msg:"Deleted"})
+        }).catch((error)=>{
+            console.log(error);
+            
+        })
+        
+        
+    } catch (error) {
+        console.log(error);
+        
+        
+    }
+    
+}
